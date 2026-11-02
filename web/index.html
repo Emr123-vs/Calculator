@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Lab7 Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding-top: 80px;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 24px;
+            width: 320px;
+        }
+
+        input, select, button {
+            font-size: 16px;
+            padding: 6px;
+            margin: 6px 0;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 16px;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Calculator</h2>
+        <input id="a" type="number" value="10" style="width: 100%" />
+        <select id="op" style="width: 100%">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input id="b" type="number" value="5" style="width: 100%" />
+        <button onclick="calculate()" style="width: 100%">Calculate</button>
+        <div id="result"></div>
+    </div>
+    <script>
+    async function calculate() {
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const op = document.getElementById('op').value;
+      const res = document.getElementById('result');
+      try {
+        const resp = await fetch('/api/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ a, b, op })
+        });
+        const data = await resp.json();
+        if (data.error) res.textContent = 'Error: ' + data.error;
+        else res.textContent = `${a} ${op} ${b} = ${data.result}`;
+      } catch (e) {
+        res.textContent = 'Request failed: ' + e.message;
+      }
+    }
+    </script>
+</body>
+</html>

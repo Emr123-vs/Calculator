@@ -1,0 +1,30 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lab7-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=INFO
+    restart: on-failure
+    networks:
+      - lab7-net
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: lab7-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    networks:
+      - lab7-net
+
+networks:
+  lab7-net:
+    driver: bridge
